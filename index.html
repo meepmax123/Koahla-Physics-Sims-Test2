@@ -32,7 +32,8 @@
                 cheerpjCreateDisplay(800, 600, document.getElementById('cheerpj-display'));
                 
                 status.innerText = "Loading JAR and Running DriverPhys...";
-                await cheerpjRunMain("KoahlaPhysicsSimsTest2.DriverPhys", "./KoahlaPhysicsSimsTest2.jar");
+                // This tells CheerpJ to ignore the JAR and just run the .class file directly
+                await cheerpjRunMain("DriverPhys", "/app/");
                 
                 status.innerText = "Simulation Active";
             } catch (e) {
