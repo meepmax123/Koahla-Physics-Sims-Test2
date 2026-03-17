@@ -13,13 +13,34 @@
 
     <script>
         async function runSimulation() {
-            status.innerText = "Loading Class and Running DriverPhys...";
-
-            // We use "/app/" as the second argument. 
-            // This tells CheerpJ to look at your root GitHub folder for .class files.
-            await cheerpjRunMain("DriverPhys", "/app/");
+            // Define the status variable so the script can find the text on screen
+            const status = document.getElementById('status');
             
-            status.innerText = "Simulation Active";
+            // Check if the script loaded from the internet
+            if (typeof cheerpjInit === 'undefined') {
+                status.innerText = "Error: CheerpJ Loader not found.";
+                return;
+            }
+
+            try {
+                // STEP 1: Initialize the engine (CRITICAL)
+                status.innerText = "Initializing Engine...";
+                await cheerpjInit({enableNetwork:true, enableConsole:true});
+                
+                // STEP 2: Setup the display
+                status.innerText = "Creating Display...";
+                cheerpjCreateDisplay(800, 600, document.getElementById('cheerpj-display'));
+                
+                // STEP 3: Run the class file
+                status.innerText = "Loading DriverPhys.class...";
+                // This looks for DriverPhys.class in your GitHub root
+                await cheerpjRunMain("DriverPhys", "/app/");
+                
+                status.innerText = "Simulation Active";
+            } catch (e) {
+                status.innerText = "Java Error: " + e.message;
+                console.error("Full Error Details:", e);
+            }
         }
 
         // Start when the page is ready
