@@ -3,31 +3,44 @@
 <head>
     <meta charset="utf-8">
     <title>Physics Sim</title>
-    <script type="text/javascript" src="https://cjrtnc.leaningtech.com/3.0/loader.js"></script>
+    <script src="https://cjrtnc.leaningtech.com/3.0/loader.js"></script>
 </head>
-<body style="margin:0; background-color:#f0f0f0; display:flex; flex-direction:column; align-items:center;">
-    <h2 id="status">Loading Physics Sim...</h2>
+<body style="margin:0; background-color:#f0f0f0; display:flex; flex-direction:column; align-items:center; font-family:sans-serif;">
+    
+    <h2 id="status">Waiting for engine...</h2>
     
     <div id="cheerpj-display" style="width:800px; height:600px; border:2px solid #333; background-color:white;"></div>
 
     <script>
-        async function start() {
-            if (typeof cheerpjInit !== 'undefined') {
-                document.getElementById('status').innerText = "Initializing Engine...";
+        async function initApp() {
+            const status = document.getElementById('status');
+            
+            // 1. Wait for the loader script to actually be ready
+            if (typeof cheerpjInit === 'undefined') {
+                status.innerText = "Engine script not ready yet, retrying...";
+                setTimeout(initApp, 1000);
+                return;
+            }
+
+            try {
+                status.innerText = "Initializing Engine (may take 20s)...";
                 await cheerpjInit();
                 
-                // Link the Java window to our div
+                status.innerText = "Setting up display...";
                 cheerpjCreateDisplay(800, 600, document.getElementById('cheerpj-display'));
                 
-                document.getElementById('status').innerText = "Running App...";
-                // Start the JAR
+                status.innerText = "Starting DriverPhys...";
                 await cheerpjRunMain("DriverPhys", "/app/KoahlaPhysicsSimsTest2.jar");
-            } else {
-                // Keep checking until loader.js arrives
-                setTimeout(start, 500);
+                
+                status.innerText = "App Running!";
+            } catch (err) {
+                status.innerText = "Error: " + err.message;
+                console.error(err);
             }
         }
-        start();
+
+        // Start the check
+        initApp();
     </script>
 </body>
 </html>
