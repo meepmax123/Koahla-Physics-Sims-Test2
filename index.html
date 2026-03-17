@@ -1,25 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="utf-8">
     <title>Physics Sim</title>
     <script type="text/javascript" src="https://cjrtnc.leaningtech.com/3.0/loader.js"></script>
 </head>
-<body>
-    <div id="container"></div>
+<body style="margin:0; background-color:#f0f0f0; display:flex; flex-direction:column; align-items:center;">
+    <h2 id="status">Loading Physics Sim...</h2>
+    
+    <div id="cheerpj-display" style="width:800px; height:600px; border:2px solid #333; background-color:white;"></div>
+
     <script>
-        // Instead of waiting for onload, we check for the function directly
-        async function run() {
+        async function start() {
             if (typeof cheerpjInit !== 'undefined') {
+                document.getElementById('status').innerText = "Initializing Engine...";
                 await cheerpjInit();
-                cheerpjCreateDisplay(800, 600);
+                
+                // Link the Java window to our div
+                cheerpjCreateDisplay(800, 600, document.getElementById('cheerpj-display'));
+                
+                document.getElementById('status').innerText = "Running App...";
+                // Start the JAR
                 await cheerpjRunMain("DriverPhys", "/app/KoahlaPhysicsSimsTest2.jar");
             } else {
-                // If it fails, we wait 1 second and try again (polling)
-                setTimeout(run, 1000);
+                // Keep checking until loader.js arrives
+                setTimeout(start, 500);
             }
         }
-        run();
+        start();
     </script>
 </body>
 </html>
