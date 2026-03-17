@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>My Java App</title>
+    <script src="https://cjrtnc.leaningtech.com/3.0/loader.js"></script>
+  </head>
+  <body>
+    <script>
+      async function startApp() {
+        await cheerpjInit();
+        cheerpjCreateDisplay(800, 600);
+        // Replace 'MyProject.jar' with your actual filename
+        // Replace 'com.package.Main' with your actual Main Class
+        cheerpjRunMain("com.package.Main", "/app/MyProject.jar");
+      }
+      startApp();
+    </script>
+  </body>
+</html>
