@@ -1,31 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <title>Physics Sim</title>
-    <script id="cheerpj-loader" src="https://cjrtnc.leaningtech.com/3.0/loader.js" 
-            onerror="console.error('The browser blocked the CheerpJ script from downloading!')"></script>
+    <script src="https://cjrtnc.leaningtech.com/3.0/loader.js"></script>
 </head>
 <body>
-    <div id="loading-msg">Loading Java Engine... (Please wait 10-20 seconds)</div>
+    <div id="container"></div>
     <script>
-        window.addEventListener('load', async function() {
-            const status = document.getElementById('loading-msg');
-            try {
-                if (typeof cheerpjInit !== 'undefined') {
-                    status.innerHTML = "Engine loaded! Starting Java app...";
-                    await cheerpjInit();
-                    cheerpjCreateDisplay(800, 600);
-                    await cheerpjRunMain("DriverPhys", "/app/KoahlaPhysicsSimsTest2.jar");
-                } else {
-                    status.innerHTML = "<h1>Error: CheerpJ script not found.</h1>";
-                    console.error("CheerpJ variable missing. The script didn't load.");
-                }
-            } catch (e) {
-                status.innerHTML = "<h1>Error starting app. Check console (F12).</h1>";
-                console.error("Detailed Error:", e);
+        // Instead of waiting for onload, we check for the function directly
+        async function run() {
+            if (typeof cheerpjInit !== 'undefined') {
+                await cheerpjInit();
+                cheerpjCreateDisplay(800, 600);
+                await cheerpjRunMain("DriverPhys", "/app/KoahlaPhysicsSimsTest2.jar");
+            } else {
+                // If it fails, we wait 1 second and try again (polling)
+                setTimeout(run, 1000);
             }
-        });
+        }
+        run();
     </script>
 </body>
 </html>
