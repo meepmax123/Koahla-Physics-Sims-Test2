@@ -1,25 +1,52 @@
-<script>
-    async function runSimulation() {
-        const status = document.getElementById('status');
-        
-        try {
-            status.innerText = "Initializing Engine...";
-            // We use 4.2 and enable the console so we can see the 'real' error
-            await cheerpjInit({enableNetwork:true, enableConsole:true});
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Physics Sim - Individual Files Mode</title>
+    <script src="https://cjrtnc.leaningtech.com/4.2/loader.js"></script>
+</head>
+<body style="margin:0; background:#1a1a1a; color:white; display:flex; flex-direction:column; align-items:center; font-family:sans-serif;">
+
+    <h2 id="status" style="margin-top:20px;">Loading Physics Simulation...</h2>
+    
+    <div id="cheerpj-display" style="width:800px; height:600px; background:#000; border:2px solid #444; box-shadow: 0 0 20px rgba(0,0,0,0.5);"></div>
+
+    <script>
+        async function runSimulation() {
+            const status = document.getElementById('status');
             
-            cheerpjCreateDisplay(800, 600, document.getElementById('cheerpj-display'));
+            // Wait a moment for the loader to settle
+            await new Promise(resolve => setTimeout(resolve, 500));
             
-            status.innerText = "Loading Simulation Archive...";
-            
-            // "/app/" is the virtual root. 
-            // We must point to the JAR so all your classes (Ball, etc.) are found together.
-            await cheerpjRunMain("DriverPhys", "/app/KoahlaPhysicsSimsTest2.jar");
-            
-            status.innerText = "Simulation Active";
-        } catch (e) {
-            status.innerText = "Java Error: " + e.message;
-            console.error("Full Error Details:", e);
+            if (typeof cheerpjInit === 'undefined') {
+                status.innerText = "Error: CheerpJ Loader not found. Check your internet connection.";
+                return;
+            }
+
+            try {
+                status.innerText = "Initializing Engine...";
+                // Enable console so we can see which specific .class files it's fetching
+                await cheerpjInit({enableNetwork:true, enableConsole:true});
+                
+                status.innerText = "Setting Up Display...";
+                cheerpjCreateDisplay(800, 600, document.getElementById('cheerpj-display'));
+                
+                status.innerText = "Booting DriverPhys (Fetching classes)...";
+                
+                /* IMPORTANT: "/app/" tells CheerpJ to look at your GitHub root.
+                   It will automatically find DriverPhys.class and then 
+                   automatically fetch any other .class files it needs from the same spot.
+                */
+                await cheerpjRunMain("DriverPhys", "/app/");
+                
+                status.innerText = "Simulation Active";
+            } catch (e) {
+                status.innerText = "Java Error: " + e.message;
+                console.error("Technical Details:", e);
+            }
         }
-    }
-    window.onload = runSimulation;
-</script>
+
+        window.onload = runSimulation;
+    </script>
+</body>
+</html>
