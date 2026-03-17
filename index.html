@@ -8,12 +8,17 @@
   <body>
     <script>
       async function startApp() {
-        await cheerpjInit();
-        cheerpjCreateDisplay(800, 600);
-        // Replace 'MyProject.jar' with your actual filename
-        // Replace 'com.package.Main' with your actual Main Class
-        cheerpjRunMain("DriverPhys", "/app/KoahlaPhysicsSimsTest2.jar");
-      }
+        // This waits for the window to be fully ready
+        await new Promise(resolve => window.onload = resolve);
+        
+        if (typeof cheerpjInit !== 'undefined') {
+          await cheerpjInit();
+          cheerpjCreateDisplay(800, 600);
+          cheerpjRunMain("DriverPhys", "/app/KoahlaPhysicsSimsTest2.jar");
+        } else {
+          console.error("CheerpJ loader failed to load.");
+        }
+      }   
       startApp();
     </script>
   </body>
