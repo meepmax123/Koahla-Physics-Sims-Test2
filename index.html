@@ -1,25 +1,28 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="utf-8">
-    <title>My Java App</title>
+    <title>Physics Sim</title>
     <script src="https://cjrtnc.leaningtech.com/3.0/loader.js"></script>
-  </head>
-  <body>
+</head>
+<body>
     <script>
-      async function startApp() {
-        // This waits for the window to be fully ready
-        await new Promise(resolve => window.onload = resolve);
-        
-        if (typeof cheerpjInit !== 'undefined') {
-          await cheerpjInit();
-          cheerpjCreateDisplay(800, 600);
-          cheerpjRunMain("DriverPhys", "/app/KoahlaPhysicsSimsTest2.jar");
-        } else {
-          console.error("CheerpJ loader failed to load.");
-        }
-      }   
-      startApp();
+        // We use window.onload to ensure the 'cheerpjInit' variable exists
+        window.onload = async function() {
+            try {
+                if (typeof cheerpjInit !== 'undefined') {
+                    await cheerpjInit();
+                    cheerpjCreateDisplay(800, 600);
+                    // Double check: Is it DriverPhys or DriverPhys.class? (Use just DriverPhys)
+                    await cheerpjRunMain("DriverPhys", "/app/KoahlaPhysicsSimsTest2.jar");
+                } else {
+                    console.error("CheerpJ is not defined. Check your internet or the script URL.");
+                    document.body.innerHTML = "<h1>Error: CheerpJ engine could not be loaded.</h1>";
+                }
+            } catch (e) {
+                console.error("Error starting app:", e);
+            }
+        };
     </script>
-  </body>
+</body>
 </html>
