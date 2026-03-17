@@ -3,45 +3,46 @@
 <head>
     <meta charset="utf-8">
     <title>Physics Sim</title>
-    <script src="https://cjrtnc.leaningtech.com/3.0/loader.js"></script>
+    <script src="https://cjrtnc.leaningtech.com/4.2/loader.js"></script>
 </head>
-<body style="margin:0; background:#222; color:white; display:flex; flex-direction:column; align-items:center; font-family:sans-serif;">
+<body style="margin:0; background:#1a1a1a; color:white; display:flex; flex-direction:column; align-items:center; font-family:sans-serif;">
 
-    <h2 id="status" style="margin-top:20px;">Loading Java Engine...</h2>
+    <h2 id="status" style="margin-top:20px;">Checking Engine (v4.2)...</h2>
     
-    <div id="cheerpj-display" style="width:800px; height:600px; background:#000; border:2px solid #555;"></div>
+    <div id="cheerpj-display" style="width:800px; height:600px; background:#000; border:2px solid #444; box-shadow: 0 0 20px rgba(0,0,0,0.5);"></div>
 
     <script>
         async function runSimulation() {
             const status = document.getElementById('status');
             
-            try {
-                // 1. Check if the script actually loaded
-                if (typeof cheerpjInit === 'undefined') {
-                    status.innerText = "Error: CheerpJ script blocked by browser.";
-                    return;
-                }
+            // Give the browser an extra half-second to unpack the 4.2 engine
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Check if the 4.2 script worked
+            if (typeof cheerpjInit === 'undefined') {
+                status.innerText = "Fatal Error: The 4.2 script is still missing.";
+                return;
+            }
 
-                // 2. Initialize the engine
-                status.innerText = "Engine Found. Initializing Java...";
+            try {
+                status.innerText = "Initializing Engine v4.2 (This takes ~20 seconds)...";
                 await cheerpjInit();
                 
-                // 3. Create the Java window inside our div
+                status.innerText = "Creating Display...";
                 cheerpjCreateDisplay(800, 600, document.getElementById('cheerpj-display'));
                 
-                // 4. Run the JAR
-                status.innerText = "Starting DriverPhys...";
+                status.innerText = "Loading JAR and Running DriverPhys...";
                 await cheerpjRunMain("DriverPhys", "/app/KoahlaPhysicsSimsTest2.jar");
                 
-                status.innerText = "Physics Sim Active";
+                status.innerText = "Simulation Active";
             } catch (e) {
-                status.innerText = "Error: " + e.message;
-                console.error(e);
+                status.innerText = "Java Error: " + e.message;
+                console.error("Full Error:", e);
             }
         }
 
-        // Run the function after the page is fully loaded
-        window.addEventListener('load', runSimulation);
+        // Start when the page is ready
+        window.onload = runSimulation;
     </script>
 </body>
 </html>
