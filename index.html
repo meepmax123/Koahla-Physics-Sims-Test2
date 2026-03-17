@@ -13,33 +13,13 @@
 
     <script>
         async function runSimulation() {
-            const status = document.getElementById('status');
-            
-            // Give the browser an extra half-second to unpack the 4.2 engine
-            await new Promise(resolve => setTimeout(resolve, 500));
-            
-            // Check if the 4.2 script worked
-            if (typeof cheerpjInit === 'undefined') {
-                status.innerText = "Fatal Error: The 4.2 script is still missing.";
-                return;
-            }
+            status.innerText = "Loading Class and Running DriverPhys...";
 
-            try {
-                status.innerText = "Initializing Engine v4.2 (This takes ~20 seconds)...";
-                await cheerpjInit();
-                
-                status.innerText = "Creating Display...";
-                cheerpjCreateDisplay(800, 600, document.getElementById('cheerpj-display'));
-                
-                status.innerText = "Loading JAR and Running DriverPhys...";
-                // This tells CheerpJ to ignore the JAR and just run the .class file directly
-                await cheerpjRunMain("DriverPhys", "/app/");
-                
-                status.innerText = "Simulation Active";
-            } catch (e) {
-                status.innerText = "Java Error: " + e.message;
-                console.error("Full Error:", e);
-            }
+            // We use "/app/" as the second argument. 
+            // This tells CheerpJ to look at your root GitHub folder for .class files.
+            await cheerpjRunMain("DriverPhys", "/app/");
+            
+            status.innerText = "Simulation Active";
         }
 
         // Start when the page is ready
