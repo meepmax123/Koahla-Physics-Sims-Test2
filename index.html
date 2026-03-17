@@ -3,44 +3,43 @@
 <head>
     <meta charset="utf-8">
     <title>Physics Sim</title>
-    <script src="https://cjrtnc.leaningtech.com/3.0/loader.js"></script>
 </head>
 <body style="margin:0; background-color:#f0f0f0; display:flex; flex-direction:column; align-items:center; font-family:sans-serif;">
     
-    <h2 id="status">Waiting for engine...</h2>
-    
+    <h2 id="status">Starting Loader...</h2>
     <div id="cheerpj-display" style="width:800px; height:600px; border:2px solid #333; background-color:white;"></div>
 
     <script>
-        async function initApp() {
+        function loadEngine() {
             const status = document.getElementById('status');
+            const script = document.createElement('script');
             
-            // 1. Wait for the loader script to actually be ready
-            if (typeof cheerpjInit === 'undefined') {
-                status.innerText = "Engine script not ready yet, retrying...";
-                setTimeout(initApp, 1000);
-                return;
-            }
+            // Adding a timestamp at the end (?t=...) forces the browser to 
+            // look for a fresh version instead of a blocked/cached one.
+            script.src = "https://cjrtnc.leaningtech.com/3.0/loader.js?t=" + Date.now();
+            script.type = "text/javascript";
+            
+            script.onload = async function() {
+                status.innerText = "Engine Loaded! Initializing...";
+                try {
+                    await cheerpjInit();
+                    cheerpjCreateDisplay(800, 600, document.getElementById('cheerpj-display'));
+                    status.innerText = "Running DriverPhys...";
+                    await cheerpjRunMain("DriverPhys", "/app/Koahla-Physics-Sims-Test2.jar");
+                    status.innerText = "Simulation Active";
+                } catch (e) {
+                    status.innerText = "Java Error: " + e.message;
+                }
+            };
 
-            try {
-                status.innerText = "Initializing Engine (may take 20s)...";
-                await cheerpjInit();
-                
-                status.innerText = "Setting up display...";
-                cheerpjCreateDisplay(800, 600, document.getElementById('cheerpj-display'));
-                
-                status.innerText = "Starting DriverPhys...";
-                await cheerpjRunMain("DriverPhys", "/app/KoahlaPhysicsSimsTest2.jar");
-                
-                status.innerText = "App Running!";
-            } catch (err) {
-                status.innerText = "Error: " + err.message;
-                console.error(err);
-            }
+            script.onerror = function() {
+                status.innerHTML = "<h3>Security Block Detected</h3><p>Your browser or network is blocking the Java engine. Try turning off Ad-Blockers or use an Incognito window.</p>";
+            };
+
+            document.head.appendChild(script);
         }
 
-        // Start the check
-        initApp();
+        loadEngine();
     </script>
 </body>
 </html>
