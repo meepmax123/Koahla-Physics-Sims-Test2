@@ -1,50 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>Physics Sim</title>
-    <script src="https://cjrtnc.leaningtech.com/4.2/loader.js"></script>
-</head>
-<body style="margin:0; background:#1a1a1a; color:white; display:flex; flex-direction:column; align-items:center; font-family:sans-serif;">
-
-    <h2 id="status" style="margin-top:20px;">Checking Engine (v4.2)...</h2>
-    
-    <div id="cheerpj-display" style="width:800px; height:600px; background:#000; border:2px solid #444; box-shadow: 0 0 20px rgba(0,0,0,0.5);"></div>
-
-    <script>
-        async function runSimulation() {
-            // Define the status variable so the script can find the text on screen
-            const status = document.getElementById('status');
+<script>
+    async function runSimulation() {
+        const status = document.getElementById('status');
+        
+        try {
+            status.innerText = "Initializing Engine...";
+            // We use 4.2 and enable the console so we can see the 'real' error
+            await cheerpjInit({enableNetwork:true, enableConsole:true});
             
-            // Check if the script loaded from the internet
-            if (typeof cheerpjInit === 'undefined') {
-                status.innerText = "Error: CheerpJ Loader not found.";
-                return;
-            }
-
-            try {
-                // STEP 1: Initialize the engine (CRITICAL)
-                status.innerText = "Initializing Engine...";
-                await cheerpjInit({enableNetwork:true, enableConsole:true});
-                
-                // STEP 2: Setup the display
-                status.innerText = "Creating Display...";
-                cheerpjCreateDisplay(800, 600, document.getElementById('cheerpj-display'));
-                
-                // STEP 3: Run the class file
-                status.innerText = "Loading DriverPhys.class...";
-                // This looks for DriverPhys.class in your GitHub root
-                await cheerpjRunMain("DriverPhys", "/app/");
-                
-                status.innerText = "Simulation Active";
-            } catch (e) {
-                status.innerText = "Java Error: " + e.message;
-                console.error("Full Error Details:", e);
-            }
+            cheerpjCreateDisplay(800, 600, document.getElementById('cheerpj-display'));
+            
+            status.innerText = "Loading Simulation Archive...";
+            
+            // "/app/" is the virtual root. 
+            // We must point to the JAR so all your classes (Ball, etc.) are found together.
+            await cheerpjRunMain("DriverPhys", "/app/KoahlaPhysicsSimsTest2.jar");
+            
+            status.innerText = "Simulation Active";
+        } catch (e) {
+            status.innerText = "Java Error: " + e.message;
+            console.error("Full Error Details:", e);
         }
-
-        // Start when the page is ready
-        window.onload = runSimulation;
-    </script>
-</body>
-</html>
+    }
+    window.onload = runSimulation;
+</script>
