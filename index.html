@@ -20,10 +20,14 @@
             
             cheerpjCreateDisplay(800, 600, document.getElementById('cheerpj-display'));
             
-            status.innerText = "Loading DriverPhys...";
+            status.innerText = "Loading Physics Classes...";
 
-            // This path must match your URL exactly
-            await cheerpjRunMain("DriverPhys", "/app/Koahla-Physics-Sims-Test2/");
+            // This calculates your folder path automatically
+            // It will result in "/Koahla-Physics-Sims-Test2/"
+            const repoPath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+
+            // We run the main class using the clean path
+            await cheerpjRunMain("DriverPhys", repoPath);
             
             status.innerText = "Simulation Active";
         } catch (e) {
