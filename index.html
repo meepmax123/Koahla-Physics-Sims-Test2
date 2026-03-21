@@ -5,40 +5,40 @@
     <title>Physics Sim - Individual Files Mode</title>
     <script src="https://cjrtnc.leaningtech.com/4.2/loader.js"></script>
 </head>
-<body style="margin:0; background:#1a1a1a; color:white; display:flex; flex-direction:column; align-items:center; font-family:sans-serif;">
+<body style="margin: 0; overflow: hidden; background-color: black;">
 
-    <h2 id="status" style="margin-top:20px;">Loading Physics Simulation...</h2>
-    
-    <div id="cheerpj-display" style="width:800px; height:600px; background:#000; border:2px solid #444; box-shadow: 0 0 20px rgba(0,0,0,0.5);"></div>
+    <div id="status" style="color: white; position: absolute; top: 10px; left: 10px; z-index: 10;">
+        Initializing...
+    </div>
+
+    <div id="cheerpj-display" style="width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center;"></div>
 
     <script>
-    async function runSimulation() {
-        const status = document.getElementById('status');
-        try {
-            status.innerText = "Initializing Engine (Java 17)...";
-            
-            // The Java 17 engine you successfully unlocked
-            await cheerpjInit({
-                version: 17, 
-                enableNetwork: true, 
-                enableConsole: true
-            });
-            
-            cheerpjCreateDisplay(800, 600, document.getElementById('cheerpj-display'));
-            
-            status.innerText = "Starting DriverPhys...";
+        async function runSimulation() {
+            const status = document.getElementById('status');
+            try {
+                status.innerText = "Initializing Engine (Java 17)...";
+                await cheerpjInit({version: 17, enableNetwork: true, enableConsole: true});
+                
+                // ADJUST THESE NUMBERS: 
+                // Set these to the actual internal dimensions of your Java Applet/Frame.
+                // If your code uses 800x600, keep it. If it's bigger, increase them.
+                cheerpjCreateDisplay(900, 700, document.getElementById('cheerpj-display'));
+                
+                status.innerText = "Starting DriverPhys...";
 
-            // THE FIX: We are strictly hardcoding the /app/ prefix.
-            // (Make sure the trailing slash is there!)
-            await cheerpjRunMain("DriverPhys", "/app/Koahla-Physics-Sims-Test2/");
-            
-            status.innerText = "Simulation Active";
-        } catch (e) {
-            status.innerText = "Java Error: " + e.message;
-            console.error(e);
+                await cheerpjRunMain("DriverPhys", "/app/Koahla-Physics-Sims-Test2/");
+                
+                // THIS HIDES THE TEXT:
+                status.style.display = "none"; 
+                
+            } catch (e) {
+                status.innerText = "Java Error: " + e.message;
+                status.style.color = "red";
+                console.error(e);
+            }
         }
-    }
-    window.onload = runSimulation;
-</script>
+        window.onload = runSimulation;
+    </script>
 </body>
 </html>
