@@ -13,26 +13,32 @@
 
     <script>
     async function runSimulation() {
-    const status = document.getElementById('status');
-    try {
-        status.innerText = "Initializing Engine...";
-        await cheerpjInit({enableNetwork:true, enableConsole:true});
-        
-        cheerpjCreateDisplay(800, 600, document.getElementById('cheerpj-display'));
-        
-        status.innerText = "Starting DriverPhys...";
+        const status = document.getElementById('status');
+        try {
+            status.innerText = "Initializing Engine (Java 17)...";
+            
+            // KEY CHANGE: We tell CheerpJ to use the Java 17 runtime
+            await cheerpjInit({
+                version: 17, 
+                enableNetwork: true, 
+                enableConsole: true
+            });
+            
+            cheerpjCreateDisplay(800, 600, document.getElementById('cheerpj-display'));
+            
+            status.innerText = "Starting DriverPhys...";
 
-        // We use the absolute virtual path to your repo
-        // No "simulation." prefix because there is no package!
-        await cheerpjRunMain("DriverPhys", "/app/Koahla-Physics-Sims-Test2/");
-        
-        status.innerText = "Simulation Active";
-    } catch (e) {
-        status.innerText = "Java Error: " + e.message;
-        console.error(e);
+            const repoPath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+
+            await cheerpjRunMain("DriverPhys", repoPath);
+            
+            status.innerText = "Simulation Active";
+        } catch (e) {
+            status.innerText = "Java Error: " + e.message;
+            console.error(e);
+        }
     }
-}
-window.onload = runSimulation;
+    window.onload = runSimulation;
 </script>
 </body>
 </html>
