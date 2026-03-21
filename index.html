@@ -14,24 +14,21 @@
     <script>
     async function runSimulation() {
         const status = document.getElementById('status');
-        
         try {
             status.innerText = "Initializing Engine...";
-            // We use 4.2 with console enabled to catch any stray errors
             await cheerpjInit({enableNetwork:true, enableConsole:true});
             
             cheerpjCreateDisplay(800, 600, document.getElementById('cheerpj-display'));
             
-            status.innerText = "Locating DriverPhys.class...";
-            
-            // KEY CHANGE: We use "./" instead of "/app/" 
-            // This ensures it looks inside your repo folder.
+            status.innerText = "Loading DriverPhys...";
+
+            // This path must match your URL exactly
             await cheerpjRunMain("DriverPhys", "/app/Koahla-Physics-Sims-Test2/");
             
             status.innerText = "Simulation Active";
         } catch (e) {
             status.innerText = "Java Error: " + e.message;
-            console.error("Technical Details:", e);
+            console.error(e);
         }
     }
     window.onload = runSimulation;
