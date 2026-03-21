@@ -13,28 +13,27 @@
 
     <script>
     async function runSimulation() {
-        const status = document.getElementById('status');
-        try {
-            status.innerText = "Initializing Engine...";
-            await cheerpjInit({enableNetwork:true, enableConsole:true});
-            
-            cheerpjCreateDisplay(800, 600, document.getElementById('cheerpj-display'));
-            
-            status.innerText = "Loading Physics Classes...";
+    const status = document.getElementById('status');
+    try {
+        status.innerText = "Initializing Engine...";
+        await cheerpjInit({enableNetwork:true, enableConsole:true});
+        
+        cheerpjCreateDisplay(800, 600, document.getElementById('cheerpj-display'));
+        
+        status.innerText = "Loading DriverPhys...";
 
-            // This calculates your folder path automatically
-            // It will result in "/Koahla-Physics-Sims-Test2/"
-            const repoPath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+        // This line is the magic trick. It finds your repo folder automatically.
+        const repoPath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
 
-            // We run the main class using the clean path
-            await cheerpjRunMain("DriverPhys", repoPath);
-            
-            status.innerText = "Simulation Active";
-        } catch (e) {
-            status.innerText = "Java Error: " + e.message;
-            console.error(e);
-        }
+        // We use the repoPath so CheerpJ knows exactly where the .class files are.
+        await cheerpjRunMain("DriverPhys", repoPath);
+        
+        status.innerText = "Simulation Active";
+    } catch (e) {
+        status.innerText = "Java Error: " + e.message;
+        console.error("Diagnostic Info:", e);
     }
+}
     window.onload = runSimulation;
 </script>
 </body>
