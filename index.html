@@ -20,21 +20,19 @@
         
         cheerpjCreateDisplay(800, 600, document.getElementById('cheerpj-display'));
         
-        status.innerText = "Loading DriverPhys...";
+        status.innerText = "Starting DriverPhys...";
 
-        // This line is the magic trick. It finds your repo folder automatically.
-        const repoPath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
-
-        // We use the repoPath so CheerpJ knows exactly where the .class files are.
-        await cheerpjRunMain("DriverPhys", repoPath);
+        // We use the absolute virtual path to your repo
+        // No "simulation." prefix because there is no package!
+        await cheerpjRunMain("DriverPhys", "/app/Koahla-Physics-Sims-Test2/");
         
         status.innerText = "Simulation Active";
     } catch (e) {
         status.innerText = "Java Error: " + e.message;
-        console.error("Diagnostic Info:", e);
+        console.error(e);
     }
 }
-    window.onload = runSimulation;
+window.onload = runSimulation;
 </script>
 </body>
 </html>
