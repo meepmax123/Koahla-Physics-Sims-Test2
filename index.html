@@ -12,41 +12,29 @@
     <div id="cheerpj-display" style="width:800px; height:600px; background:#000; border:2px solid #444; box-shadow: 0 0 20px rgba(0,0,0,0.5);"></div>
 
     <script>
-        async function runSimulation() {
-            const status = document.getElementById('status');
+    async function runSimulation() {
+        const status = document.getElementById('status');
+        
+        try {
+            status.innerText = "Initializing Engine...";
+            // We use 4.2 with console enabled to catch any stray errors
+            await cheerpjInit({enableNetwork:true, enableConsole:true});
             
-            // Wait a moment for the loader to settle
-            await new Promise(resolve => setTimeout(resolve, 500));
+            cheerpjCreateDisplay(800, 600, document.getElementById('cheerpj-display'));
             
-            if (typeof cheerpjInit === 'undefined') {
-                status.innerText = "Error: CheerpJ Loader not found. Check your internet connection.";
-                return;
-            }
-
-            try {
-                status.innerText = "Initializing Engine...";
-                // Enable console so we can see which specific .class files it's fetching
-                await cheerpjInit({enableNetwork:true, enableConsole:true});
-                
-                status.innerText = "Setting Up Display...";
-                cheerpjCreateDisplay(800, 600, document.getElementById('cheerpj-display'));
-                
-                status.innerText = "Booting DriverPhys (Fetching classes)...";
-                
-                /* IMPORTANT: "/app/" tells CheerpJ to look at your GitHub root.
-                   It will automatically find DriverPhys.class and then 
-                   automatically fetch any other .class files it needs from the same spot.
-                */
-                await cheerpjRunMain("DriverPhys", "./");
-                
-                status.innerText = "Simulation Active";
-            } catch (e) {
-                status.innerText = "Java Error: " + e.message;
-                console.error("Technical Details:", e);
-            }
+            status.innerText = "Locating DriverPhys.class...";
+            
+            // KEY CHANGE: We use "./" instead of "/app/" 
+            // This ensures it looks inside your repo folder.
+            await cheerpjRunMain("DriverPhys", "./");
+            
+            status.innerText = "Simulation Active";
+        } catch (e) {
+            status.innerText = "Java Error: " + e.message;
+            console.error("Technical Details:", e);
         }
-
-        window.onload = runSimulation;
-    </script>
+    }
+    window.onload = runSimulation;
+</script>
 </body>
 </html>
